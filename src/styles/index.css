@@ -1,0 +1,56 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+
+@font-face {
+  font-family: "Poppins";
+  src: url("../../public/Poppins.ttf");
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("../../public/Inter.ttf");
+}
+
+.poppins {
+  font-family: "Poppins", sans-serif;
+}
+
+.inter {
+  font-family: "Inter", sans-serif;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+  background: #2d2c38;
+}
+
+.carousel {
+  position: relative;
+  width: 100%;
+  text-align: center;
+}
+.centered {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.carousel-image {
+  opacity: 0.3;
+}
+.gallery-image {
+  @apply border-2;
+  @apply border-red-500;
+}
+.gallery-image:hover {
+}
+
+::selection {
+  @apply bg-gray-900;
+  @apply text-blue-200
+}
+
+@import "tailwindcss/utilities";
