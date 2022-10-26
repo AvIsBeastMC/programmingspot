@@ -7,9 +7,16 @@ import { MongooseService } from "../interfaces/Service";
 export default async function getServices(
   state: GlobalStateInterface,
   setState: Dispatch<SetStateAction<GlobalStateInterface>>,
-  setLoaded?: Dispatch<SetStateAction<boolean>>
+  setLoaded?: Dispatch<SetStateAction<boolean>>,
+  boolean?: boolean
 ) {
+  if (!boolean && state.services.length) {
+    if (setLoaded) setLoaded(true);
+    return;
+  }
+  
   if (setLoaded) setLoaded(false);
+  
   axios
     .get(`${mongoApi}/services`, {
       headers: {
@@ -21,7 +28,7 @@ export default async function getServices(
         ...state,
         services: response.data,
       });
-      console.log(state)
+      console.log(state);
       if (setLoaded) setLoaded(true);
     });
 }
