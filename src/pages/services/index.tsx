@@ -19,7 +19,7 @@ const Services: NextPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    getServices(state, setState, setLoaded, true);
+    getServices(state, setState, setLoaded);
   }, [router.pathname]);
 
   return (

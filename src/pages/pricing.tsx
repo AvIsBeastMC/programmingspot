@@ -23,7 +23,7 @@ const Home: NextPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    getServices(state, setState, setLoaded);
+    getServices(state, setState, setLoaded, true);
   }, [router.pathname]);
 
   const checkAccountService = (service: MongooseService): boolean => {
