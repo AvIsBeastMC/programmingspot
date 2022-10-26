@@ -1,22 +1,33 @@
 import { Dispatch, SetStateAction, createContext, useContext, useState } from 'react'
 
-import { Account } from '../interfaces/Account';
+import { MongooseAccount } from '../interfaces/Account';
+import { MongooseService } from '../interfaces/Service';
 
 export interface GlobalStateInterface {
-  account: Account | null,
+  account: MongooseAccount | null,
+  services: MongooseService[] | null,
   expiresOn: string | null,
   loggedIn: boolean
 }
 
+export const mongoApi: string = process.env.NEXT_PUBLIC_mongoapi || 'http://localhost:4000'
+
+const initialState: GlobalStateInterface = {
+  account: null,
+  services: [],
+  expiresOn: null,
+  loggedIn: false
+}
+
 const GlobalStateContext = createContext({
-  state: {} as GlobalStateInterface,
+  state: initialState,
   setState: {} as Dispatch<SetStateAction<GlobalStateInterface>>,
 });
 
 
 const GlobalStateProvider = ({
   children,
-  value = {} as GlobalStateInterface,
+  value = initialState,
 }: {
   children: React.ReactNode;
   value?: GlobalStateInterface;

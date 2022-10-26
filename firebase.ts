@@ -1,8 +1,9 @@
-import firebase from "firebase/app";
+import 'firebase/firestore'
+import 'firebase/auth'
+import 'firebase/analytics'
+import 'firebase/storage'
 
-require('firebase/firestore')
-require('firebase/auth')
-require('firebase/analytics')
+import firebase from "firebase/app";
 
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_api,

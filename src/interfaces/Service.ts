@@ -1,5 +1,22 @@
+// Services
+export interface Lesson {
+    title: string,
+    description: string,
+    videoUrl: string,
+    points: string[]
+}
+
 export interface Service {
-    name: "Web Development",
-    price: "₹0",
-    id: string
+    name: string,
+    titleImage: string,
+    createdOn: string,
+    orders: number,
+    description: string,
+    price: number,
+    lessons: Lesson[]
+    points: string[]
+}
+
+export interface MongooseService extends Service {
+    _id: string
 }

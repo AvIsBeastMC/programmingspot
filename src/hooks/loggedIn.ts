@@ -1,31 +1,41 @@
-import { Dispatch, SetStateAction } from "react"
+import { Account, MongooseAccount } from "../interfaces/Account";
+import { Dispatch, SetStateAction } from "react";
+import { GlobalStateInterface, mongoApi } from "./useGlobalState";
+import axios, { AxiosResponse } from "axios";
 
-import { Account } from "../interfaces/Account"
-import { GlobalStateInterface } from "./useGlobalState"
-import firebase from "../../firebase"
-import moment from "moment"
+import CryptoJS from "crypto-js";
+import moment from "moment";
 
-const db = firebase.firestore()
+export const loggedIn = async (
+  state: GlobalStateInterface,
+  setState: Dispatch<SetStateAction<GlobalStateInterface>>,
+  needAuth: boolean
+): Promise<boolean> => {
+  if (state.loggedIn) return true;
+  if (needAuth) return false;
 
-export const loggedIn = (state: GlobalStateInterface, setState: Dispatch<SetStateAction<GlobalStateInterface>>, auth: firebase.auth.Auth) => {
-    if (state.loggedIn) return;
-    
-    auth.onAuthStateChanged((user) => {
-        if (user) {
-            db.collection('accounts').doc(user.email).get()
-            .then((account) => {
-                setState({
-                    account: account.data() as Account,
-                    loggedIn: true,
-                    expiresOn: moment(Date()).add(24, 'hours').toString()
-                })
-            })
-        } else {
-            setState({
-                account: null,
-                loggedIn: false,
-                expiresOn: null
-            })
-        }
-    })
-}
+  if (
+    localStorage.getItem("ACCOUNT_EMAIL") &&
+    localStorage.getItem("ACCOUNT_PASSWORD")
+  ) {
+    const response: AxiosResponse<MongooseAccount> = await axios.get(
+      `${mongoApi}/auth`,
+      {
+        headers: {
+          method: "login",
+          email: localStorage.getItem("ACCOUNT_EMAIL"),
+          password: localStorage.getItem("ACCOUNT_PASSWORD"),
+        },
+      }
+    );
+
+    if (response.status == 200) {
+      setState({
+        ...state,
+        account: response.data,
+        loggedIn: true,
+        expiresOn: moment().add("24", "hours").toString(),
+      });
+    }
+  }
+};

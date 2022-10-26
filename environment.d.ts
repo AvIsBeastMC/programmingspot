@@ -7,6 +7,8 @@ declare global {
             NEXT_PUBLIC_storageBucket: string;
             NEXT_PUBLIC_messagingSenderId: string;
             NEXT_PUBLIC_appId: string;
+            NEXT_PUBLIC_mongo: string;
+            NEXT_PUBLIC_razorpayKey: string;
         }
     }
 }
