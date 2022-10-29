@@ -28,7 +28,6 @@ export default async function getServices(
         ...state,
         services: response.data,
       });
-      console.log(state);
       if (setLoaded) setLoaded(true);
     });
 }

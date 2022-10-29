@@ -6,6 +6,7 @@ import { mongoApi, useGlobalState } from "../hooks/useGlobalState";
 import { FileUploader } from "react-drag-drop-files";
 import Head from "next/head";
 import { MongooseAccount } from "../interfaces/Account";
+import { Order } from "../interfaces/Order";
 import { ServerError } from "../interfaces/ServerError";
 import UseAnimations from "react-useanimations";
 import firebase from "../../firebase";
@@ -13,7 +14,7 @@ import getServices from "../hooks/getServices";
 import handleAxiosError from "../hooks/handleAxiosError";
 import infinity from "react-useanimations/lib/infinity";
 import moment from "moment";
-import stringReplaceAll from 'string-replace-all';
+import stringReplaceAll from "string-replace-all";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
@@ -31,20 +32,35 @@ export default function Admin() {
   const modifiedServiceNameRef = useRef<HTMLInputElement>(null);
   const modifiedServiceDescriptionRef = useRef<HTMLTextAreaElement>(null);
   const modifiedServicePriceRef = useRef<HTMLInputElement>(null);
-  const [modifiedServicePoints, setModifiedServicePoints] = useState<string[]>([]);
+  const [modifiedServicePoints, setModifiedServicePoints] = useState<string[]>(
+    []
+  );
+  const grantRevokeAdminEmailRef = useRef<HTMLInputElement>(null);
   const [imageFile, setImageFile] = useState<File>(null);
   // State
   const { state, setState } = useGlobalState();
-  const [modifyReady, setModifyReady] = useState<boolean>(false);
-  const [servicesLoaded, setServicesLoaded] = useState<boolean>(false);
   const [isCreatingService, setIsCreatingService] = useState<boolean>(false);
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
+  const [isDeletingService, setIsDeletingService] = useState<boolean>(false);
+  const [isGrantingRevokingAdmin, setIsGrantingRevokingAdmin] =
+    useState<boolean>(false);
+  const [modifyReady, setModifyReady] = useState<boolean>(false);
+  const [ordersLoaded, setOrdersLoaded] = useState<boolean>(false);
+  const [servicesLoaded, setServicesLoaded] = useState<boolean>(false);
   const [adminLoggedIn, setAdminLoggedIn] = useState<boolean>(false);
   const [admin, setAdmin] = useState<MongooseAccount>(null);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [selectedService, setSelectedService] = useState<MongooseService>(null);
-  const [mode, setMode] = useState<
-    "login" | "dashboard" | "createService" | "modifyService"
-  >("login");
+  const [mode, setMode] = useState<Mode>("login");
+
+  type Mode =
+    | "login"
+    | "dashboard"
+    | "createService"
+    | "modifyService"
+    | "orders"
+    | "grantRevokeAdmin"
+    | "grantRevokeSub";
 
   interface HeaderComponentProps {
     content: string;
@@ -56,6 +72,52 @@ export default function Admin() {
     setImageFile(null);
     setSelectedService(null);
     setModifyReady(false);
+    setIsCreatingService(false);
+    setIsGrantingRevokingAdmin(false);
+    setIsLoggingIn(false);
+    setOrdersLoaded(false);
+    setImageFile(null);
+  };
+
+  useEffect(() => {
+    getOrders();
+  }, []);
+
+  const setView = (mode: Mode) => {
+    switch (mode) {
+      case "orders":
+        getOrders();
+        setMode(mode);
+        break;
+      case "modifyService":
+        getServices(state, setState, setServicesLoaded, true);
+        setMode(mode);
+        break;
+      default:
+        setMode(mode);
+        break;
+    }
+  };
+
+  const deleteService = (serviceId: string) => {
+    setIsDeletingService(true);
+
+    axios
+      .get(`${mongoApi}/admin`, {
+        headers: {
+          method: "deleteService",
+          id: serviceId,
+        },
+      })
+      .then(() => {
+        setIsDeletingService(false);
+        alert("Success");
+        getServices(state, setState, setServicesLoaded, true);
+        goBack();
+      })
+      .catch((e: AxiosError<ServerError>) => {
+        setIsDeletingService(false);
+      });
   };
 
   const HeaderComponent = (props: HeaderComponentProps) => (
@@ -79,7 +141,7 @@ export default function Admin() {
           <br /> Total Number of Services: {state.services.length}
         </>
       ) : null}
-      {mode !== "login" && !isCreatingService ? (
+      {mode !== "login" && !isCreatingService && !isGrantingRevokingAdmin ? (
         <>
           <br />
           <button
@@ -100,7 +162,9 @@ export default function Admin() {
             </svg>
           </button>
           <button
-            onClick={() => getServices(state, setState, setServicesLoaded)}
+            onClick={() =>
+              getServices(state, setState, setServicesLoaded, true)
+            }
             className="text-indigo-500 hover:text-blue-800 inline-flex items-center ml-4"
           >
             Refresh Services
@@ -116,6 +180,25 @@ export default function Admin() {
               <path d="M5 12h14M12 5l7 7-7 7"></path>
             </svg>
           </button>
+          {mode == "modifyService" && selectedService && modifyReady ? (
+            <button
+              onClick={() => deleteService(selectedService._id)}
+              className="text-red-700 hover:text-red-900 inline-flex items-center ml-4"
+            >
+              Delete this Service
+              <svg
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                className="w-4 h-4 ml-2"
+                viewBox="0 0 24 24"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7"></path>
+              </svg>
+            </button>
+          ) : null}
         </>
       ) : null}
     </div>
@@ -154,7 +237,7 @@ export default function Admin() {
         setAdmin(response.data);
         setIsLoggingIn(false);
         setAdminLoggedIn(true);
-        setMode("dashboard");
+        setView("dashboard");
       })
       .catch((e: AxiosError<ServerError>) => {
         handleAxiosError(e);
@@ -162,7 +245,7 @@ export default function Admin() {
         return;
       });
 
-    getServices(state, setState, setServicesLoaded);
+    getServices(state, setState, setServicesLoaded, true);
   };
 
   const createService = async (e: React.FormEvent) => {
@@ -180,8 +263,6 @@ export default function Admin() {
     }`;
 
     const imageRef = firebase.storage().ref("serviceImages/" + randomizedRef);
-
-    // const arrayBuffer = await imageFile.arrayBuffer()
 
     imageRef.put(imageFile).then(async (snp) => {
       const downloadUrl = await snp.ref.getDownloadURL();
@@ -201,7 +282,7 @@ export default function Admin() {
           alert("Successful!");
           setIsCreatingService(false);
           goBack();
-          getServices(state, setState, setServicesLoaded);
+          getServices(state, setState, setServicesLoaded, true);
         })
         .catch((error: AxiosError<ServerError>) => {
           handleAxiosError(error);
@@ -241,7 +322,7 @@ export default function Admin() {
 
     setServicePoints(newServices);
   };
-  
+
   const modifiedAddPoint = () => {
     const newServices = [...modifiedServicePoints, "Type a Point here"];
 
@@ -251,11 +332,13 @@ export default function Admin() {
   const pushValuesToModifiedFields = (service: Service) => {
     // name, price, description, points, upload image
     const byHundred = (n: number): number => {
-      return n/100
-    }
+      return n / 100;
+    };
     setTimeout(() => {
       modifiedServiceNameRef.current.value = service.name;
-      modifiedServicePriceRef.current.value = byHundred(service.price).toString();
+      modifiedServicePriceRef.current.value = byHundred(
+        service.price
+      ).toString();
       modifiedServiceDescriptionRef.current.value = service.description;
       setModifiedServicePoints(service.points);
       setModifyReady(true);
@@ -291,20 +374,62 @@ export default function Admin() {
           price: modifiedServicePriceRef.current.value,
           points: JSON.stringify(modifiedServicePoints),
           image: newPictureUrl ? newPictureUrl : selectedService.titleImage,
-          id: selectedService._id
-        }
+          id: selectedService._id,
+        },
       })
       .then(() => {
         alert("Successful!");
         setIsCreatingService(false);
         goBack();
-        getServices(state, setState, setServicesLoaded);
       })
       .catch((error: AxiosError<ServerError>) => {
         handleAxiosError(error);
         setIsCreatingService(false);
         goBack();
       });
+  };
+
+  const getOrders = () => {
+    axios
+      .get(`${mongoApi}/admin`, {
+        headers: {
+          method: "getOrders",
+        },
+      })
+      .then((response: AxiosResponse<Order[]>) => {
+        setOrders(response.data);
+        setOrdersLoaded(true);
+      })
+      .catch((error: AxiosError<ServerError>) => {
+        handleAxiosError(error);
+        goBack();
+      });
+  };
+
+  const grantRevokeAdmin = (str: 'grant' | 'revoke') => {
+    const email = grantRevokeAdminEmailRef.current.value;
+
+    if (!email.length) return alert("Field is required.")
+
+    setIsGrantingRevokingAdmin(true);
+
+    axios
+      .get(`${mongoApi}/admin`, {
+        headers: {
+          method: str == "grant" ? "grantAdmin" : "revokeAdmin",
+          email,
+        },
+      })
+      .then((res) => {
+        alert("Success");
+        goBack();
+      })
+      .catch((e: AxiosError<ServerError>) => {
+        handleAxiosError(e);
+        goBack();
+      });
+
+    setIsGrantingRevokingAdmin(false);
   };
 
   switch (mode) {
@@ -367,7 +492,6 @@ export default function Admin() {
           </section>
         </>
       );
-      break;
     case "dashboard":
       return (
         <>
@@ -379,7 +503,7 @@ export default function Admin() {
             <div className="container px-5 py-12 mx-auto">
               <div className="flex flex-wrap -m-4">
                 <button
-                  onClick={() => setMode("createService")}
+                  onClick={() => setView("createService")}
                   className="bg-gray-300 lg:w-1/4 hover:bg-gray-400 md:w-1/2 p-4 w-full"
                 >
                   <h2 className="text-gray-900 title-font text-lg font-medium">
@@ -387,7 +511,7 @@ export default function Admin() {
                   </h2>
                 </button>
                 <button
-                  onClick={() => setMode("modifyService")}
+                  onClick={() => setView("modifyService")}
                   className="bg-gray-300 lg:w-1/4 hover:bg-gray-400 md:w-1/2 p-4 w-full"
                 >
                   <h2 className="text-gray-900 title-font text-lg font-medium">
@@ -398,14 +522,20 @@ export default function Admin() {
                     </small>
                   </h2>
                 </button>
-                <button className="bg-gray-300 lg:w-1/4 hover:bg-gray-400 md:w-1/2 p-4 w-full">
+                <button
+                  onClick={() => setView("orders")}
+                  className="bg-gray-300 lg:w-1/4 hover:bg-gray-400 md:w-1/2 p-4 w-full"
+                >
                   <h2 className="text-gray-900 title-font text-lg font-medium">
                     Orders
                   </h2>
                 </button>
-                <button className="bg-gray-300 lg:w-1/4 hover:bg-gray-400 md:w-1/2 p-4 w-full">
+                <button
+                  onClick={() => setView("grantRevokeAdmin")}
+                  className="bg-gray-300 lg:w-1/4 hover:bg-gray-400 md:w-1/2 p-4 w-full"
+                >
                   <h2 className="text-gray-900 title-font text-lg font-medium">
-                    The 400 Blows
+                    Grant/Revoke Admin to an Account
                   </h2>
                 </button>
               </div>
@@ -512,7 +642,6 @@ export default function Admin() {
           </section>
         </>
       );
-      break;
     case "modifyService":
       return (
         <>
@@ -597,7 +726,8 @@ export default function Admin() {
 
                         <div className="py-2 ml-2">
                           <label className="leading-7 text-sm text-gray-600">
-                            Upload an Image (only if you want to replace previously set picture)
+                            Upload an Image (only if you want to replace
+                            previously set picture)
                           </label>
                           <FileUploader
                             handleChange={(file: File) => getFile(file)}
@@ -665,6 +795,133 @@ export default function Admin() {
           )}
         </>
       );
-      break;
+    case "orders":
+      return (
+        <>
+          <HeaderComponent content="Orders" />
+          {ordersLoaded && !orders.length ? (
+            <h1 className="inter py-4 text-red-400 text-center text-xl">
+              No orders have been placed.
+            </h1>
+          ) : null}
+          {ordersLoaded ? (
+            <>
+              <section className="text-gray-600 body-font overflow-hidden">
+                <div className="container px-5 py-12 mx-auto">
+                  <div className="-my-8 divide-y-2 divide-gray-100">
+                    {orders.map((order) => (
+                      <div className="py-8 flex flex-wrap md:flex-nowrap">
+                        <div className="md:w-64 md:mb-0 mb-6 flex-shrink-0 flex flex-col">
+                          <span className="mt-1 text-gray-500 text-sm">
+                            <b>Purchased by</b> <br /> {order.by}
+                          </span>
+                          <span className="mt-1 text-gray-500 text-sm">
+                            <b>Purchased on</b> <br />
+                            {moment(order.purchasedOn).format(
+                              "Do MMMM YYYY hh:mm A"
+                            )}
+                          </span>
+                        </div>
+                        <div className="md:flex-grow">
+                          <h2 className="text-2xl font-medium text-gray-900 title-font mb-2">
+                            {order.service.name}
+                          </h2>
+                          <p className="leading-relaxed">
+                            ₹{order.service.price / 100}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            </>
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <UseAnimations className="mt-4" size={40} animation={infinity} />
+            </div>
+          )}
+        </>
+      );
+    case "grantRevokeAdmin":
+      return (
+        <>
+          <HeaderComponent content="Grant or Revoke Admin from User" />
+          {!isGrantingRevokingAdmin ? (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <div className="p-2 w-1/5 mt-4">
+                  <div className="relative">
+                    <label className="leading-7 text-sm text-gray-600">
+                      Email
+                    </label>
+                    <input
+                      ref={grantRevokeAdminEmailRef}
+                      type="email"
+                      required
+                      className="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                    />
+                  </div>
+                  <br />
+                  <button
+                    onClick={() => grantRevokeAdmin('grant')}
+                    className="text-indigo-500 hover:text-blue-800 inline-flex items-center"
+                  >
+                    Grant
+                    <svg
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      className="w-4 h-4 ml-2"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M5 12h14M12 5l7 7-7 7"></path>
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => grantRevokeAdmin('revoke')}
+                    className="ml-4 text-red-700 hover:text-red-900 inline-flex items-center"
+                  >
+                    Revoke
+                    <svg
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      className="w-4 h-4 ml-2"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M5 12h14M12 5l7 7-7 7"></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <UseAnimations className="mt-4" size={40} animation={infinity} />
+            </div>
+          )}
+        </>
+      );
   }
 }

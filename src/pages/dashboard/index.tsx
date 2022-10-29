@@ -4,15 +4,11 @@ import Head from "next/head";
 import Link from "next/link";
 import { MongooseService } from "../../interfaces/Service";
 import { NextPage } from "next";
-import firebase from "../../../firebase";
 import getAccount from "../../hooks/getAccount";
 import { loggedIn } from "../../hooks/loggedIn";
 import moment from "moment";
 import { useGlobalState } from "../../hooks/useGlobalState";
 import { useRouter } from "next/router";
-
-const auth = firebase.auth();
-const db = firebase.firestore();
 
 const Dashboard: NextPage = () => {
   const { state, setState } = useGlobalState();
@@ -77,17 +73,17 @@ const Dashboard: NextPage = () => {
                       Purchased on <br />
                       <span className="font-normal">
                         {moment(service.boughtOn).format(
-                          "Do MMMM YYYY HH:MM A"
+                          "Do MMMM YYYY hh:mm A"
                         )}
                       </span>
                     </span>
-                    {service.transactionId !== 'null' ? (
-                    <span className="font-semibold title-font text-gray-700">
-                      Transaction ID <br />
-                      <span className="font-normal">
-                        {service.transactionId}
+                    {service.transactionId !== "null" ? (
+                      <span className="font-semibold title-font text-gray-700">
+                        Transaction ID <br />
+                        <span className="font-normal">
+                          {service.transactionId}
+                        </span>
                       </span>
-                    </span>
                     ) : null}
                     <span className="font-semibold title-font text-gray-700">
                       {moment(service.expiresOn).isBefore() ? (
@@ -114,7 +110,7 @@ const Dashboard: NextPage = () => {
                           {getService(service.servId).name}
                         </h2>
                         <p className="leading-relaxed">
-                          <b>Cost</b>: ₹{getService(service.servId).price/100}
+                          <b>Cost</b>: ₹{getService(service.servId).price / 100}
                         </p>
                       </>
                     ) : (
@@ -140,6 +136,11 @@ const Dashboard: NextPage = () => {
                   </div>
                 </div>
               ))}
+              {!state.account.services.length ? (
+                <h1 className="inter py-4 text-red-400 text-center text-xl">
+                  You have not purchased any service!
+                </h1>
+              ) : null}
             </div>
           </div>
         </section>

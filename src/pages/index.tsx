@@ -5,7 +5,9 @@ import Head from "next/head";
 import Link from "next/link";
 import { MongooseService } from "../interfaces/Service";
 import { NextPage } from "next";
+import UseAnimations from "react-useanimations";
 import getServices from "../hooks/getServices";
+import infinity from "react-useanimations/lib/infinity";
 import { loggedIn } from "../hooks/loggedIn";
 import moment from "moment";
 import { useGlobalState } from "../hooks/useGlobalState";
@@ -28,7 +30,10 @@ const Home: NextPage = () => {
           at a Very Affordable Cost!
         </title>
       </Head>
-      <section data-aos="fade-down" className="mt-12 lg:w-5/6 mx-auto select-none">
+      <section
+        data-aos="fade-down"
+        className="mt-12 lg:w-5/6 mx-auto select-none"
+      >
         <div className="rounded-lg carousel h-64 overflow-hidden">
           <img
             alt="content"
@@ -65,6 +70,17 @@ const Home: NextPage = () => {
           </span>
         </h1>
         <div className="container px-12 mx-auto">
+          {!loaded ? (
+            <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <UseAnimations className="mb-8" animation={infinity} size={40} />
+          </div>
+          ) : <></>}
           <div className="flex flex-wrap -m-4 pb-8">
             {loaded ? (
               <>
@@ -101,17 +117,6 @@ const Home: NextPage = () => {
                 )}
               </>
             ) : (
-              // <div
-              //   style={{
-              //     display: "flex",
-              //     justifyContent: "center",
-              //     alignItems: "center",
-              //   }}
-              // >
-              //   <h1 className="text-center text-red-text-3xl inter">
-              //     Loading...
-              //   </h1>
-              // </div>
               <></>
             )}
           </div>

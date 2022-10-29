@@ -36,8 +36,8 @@ export const useNewOrder = (
         },
       })
       .then((res) => {
-        alert("Successful!");
-        // router.reload();
+        alert('Successful!')
+        router.push("/dashboard");
       })
       .catch((error: AxiosError<ServerError>) => {
         alert(

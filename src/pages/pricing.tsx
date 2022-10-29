@@ -6,18 +6,16 @@ import Link from "next/link";
 import { MongooseService } from "../interfaces/Service";
 import { NextPage } from "next";
 import Script from "next/script";
-import firebase from "../../firebase";
+import UseAnimations from "react-useanimations";
 import getServices from "../hooks/getServices";
+import infinity from "react-useanimations/lib/infinity";
 import { loggedIn } from "../hooks/loggedIn";
 import moment from "moment";
 import { useGlobalState } from "../hooks/useGlobalState";
 import { useNewOrder } from "../hooks/order";
 import { useRouter } from "next/router";
 
-const auth = firebase.auth();
-const db = firebase.firestore();
-
-const Home: NextPage = () => {
+const Pricing: NextPage = () => {
   const { state, setState } = useGlobalState();
   const [loaded, setLoaded] = useState<boolean>(false);
   const router = useRouter();
@@ -28,10 +26,12 @@ const Home: NextPage = () => {
 
   const checkAccountService = (service: MongooseService): boolean => {
     if (!state.loggedIn) return false;
-    
-    const accountServicesId = state.account.services.map((accService) => accService.servId)
 
-    const i = accountServicesId.findIndex(x => x === service._id);
+    const accountServicesId = state.account.services.map(
+      (accService) => accService.servId
+    );
+
+    const i = accountServicesId.findIndex((x) => x === service._id);
 
     if (i !== -1 && moment(state.account.services[i].expiresOn).isAfter()) {
       return true;
@@ -60,8 +60,19 @@ const Home: NextPage = () => {
               complete beginner.
             </p>
           </div>
-          <div className="px-2 flex flex-wrap -m-4">
-            {loaded ? (
+          {!loaded ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <UseAnimations animation={infinity} size={40} />
+            </div>
+          ) : null}
+          {loaded ? (
+            <div className="px-2 flex flex-wrap -m-4">
               <>
                 {state.services.map((service) => (
                   <div data-aos="fade-down" className="p-4 w-full">
@@ -108,15 +119,13 @@ const Home: NextPage = () => {
                   </div>
                 ))}
               </>
-            ) : (
-              <></>
-            )}
-          </div>
+            </div>
+          ) : null}
         </div>
       </section>
-      <Footer />
+      {loaded ? <Footer /> : null}
     </>
   );
 };
 
-export default Home;
+export default Pricing;

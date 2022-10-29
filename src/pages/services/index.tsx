@@ -4,14 +4,12 @@ import Footer from "../../components/Footer";
 import Head from "next/head";
 import Link from "next/link";
 import { NextPage } from "next";
-import firebase from "../../../firebase";
+import UseAnimations from "react-useanimations";
 import getServices from "../../hooks/getServices";
+import infinity from "react-useanimations/lib/infinity";
 import { loggedIn } from "../../hooks/loggedIn";
 import { useGlobalState } from "../../hooks/useGlobalState";
 import { useRouter } from "next/router";
-
-const auth = firebase.auth();
-const db = firebase.firestore();
 
 const Services: NextPage = () => {
   const { state, setState } = useGlobalState();
@@ -32,16 +30,17 @@ const Services: NextPage = () => {
           Our Services
         </span>
       </h1>
-      <section
-        className="text-gray-400 mt-4 mb-12 body-font mx-auto"
-      >
+      <section className="text-gray-400 mt-4 mb-12 body-font mx-auto">
         <div className="container px-5 mx-auto">
           {loaded ? (
             <>
               {state.services.map((service, i) => (
                 <>
                   {i % 2 ? (
-                    <div data-aos="fade-down" className="flex items-center lg:w-3/5 mx-auto sm:flex-row flex-col">
+                    <div
+                      data-aos="fade-down"
+                      className="flex items-center lg:w-3/5 mx-auto sm:flex-row flex-col"
+                    >
                       <div className="w-72 h-72 sm:mr-10 inline-flex items-center justify-center rounded-full text-indigo-400 flex-shrink-0">
                         <img
                           className="rounded-md"
@@ -83,7 +82,7 @@ const Services: NextPage = () => {
                               style={{ background: "#3763f4" }}
                               className="text-white cursor-pointer inter hover:shadow-2xl inline-flex items-center border-0 py-2 px-5 focus:outline-none rounded-md text-base md:mt-0"
                             >
-                              Buy Now (₹{service.price/100}/year)
+                              Buy Now (₹{service.price / 100}/year)
                             </a>
                           </Link>
                         </div>
@@ -101,9 +100,17 @@ const Services: NextPage = () => {
               ))}
             </>
           ) : (
-            <></>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <UseAnimations className="mt-4" animation={infinity} size={40} />
+            </div>
           )}
-          {state.services.length === 0 ? (
+          {loaded && state.services.length === 0 ? (
             <h1 className="inter py-4 text-red-400 text-center text-xl">
               No Services Available for Purchase
             </h1>
@@ -112,7 +119,9 @@ const Services: NextPage = () => {
           )}
         </div>
       </section>
-      <Footer />
+      {loaded ? (
+        <Footer />
+      ) : <></>}
     </>
   );
 };
