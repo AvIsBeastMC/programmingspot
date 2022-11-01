@@ -534,7 +534,7 @@ export default function Admin() {
               method: "addLesson",
               id: selectedService._id,
               title,
-              description,
+              description: stringReplaceAll(description, '\n', '--n--'),
               video: videoUrl,
               points: JSON.stringify(lessonPoints),
             },

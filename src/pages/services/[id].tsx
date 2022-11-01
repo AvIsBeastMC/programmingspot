@@ -83,9 +83,36 @@ export default function () {
             </div>
           ) : (
             <div className="flex flex-col text-center w-full">
-              <h1 className="sm:text-3xl text-2xl inter font-medium title-font mb-4 text-gray-900">
+              <h1 className="sm:text-3xl text-2xl inter font-medium title-font text-gray-900">
                 {lesson.title} - {service.name}
               </h1>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginTop: "4px",
+                }}
+              >
+                <button
+                  onClick={() => setLesson(null)}
+                  className="text-indigo-800 hover:text-indigo-600 inline-flex items-center "
+                >
+                  Go Back to Lessons Section
+                  <svg
+                    className="w-4 h-4 ml-2"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M5 12h14"></path>
+                    <path d="M12 5l7 7-7 7"></path>
+                  </svg>
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -138,7 +165,7 @@ export default function () {
           <section className="text-gray-600 body-font">
             <div className="container mx-auto flex flex-col px-5 py-12 justify-center items-center">
               <video
-                className="lg:w-2/6 md:w-3/6 w-5/6 mb-6 object-cover object-center rounded"
+                className="md:w-2/3 mb-6 object-cover object-center rounded"
                 src={lesson.videoUrl}
                 controls
               />
@@ -148,7 +175,7 @@ export default function () {
                   dangerouslySetInnerHTML={{
                     __html: StringReplaceAll(
                       lesson.description,
-                      "\n",
+                      "--n--",
                       "<br />"
                     ),
                   }}

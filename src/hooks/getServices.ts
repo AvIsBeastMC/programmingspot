@@ -3,6 +3,7 @@ import { GlobalStateInterface, mongoApi } from "./useGlobalState";
 import axios, { AxiosResponse } from "axios";
 
 import { MongooseService } from "../interfaces/Service";
+import getAccount from "./getAccount";
 
 export default async function getServices(
   state: GlobalStateInterface,
