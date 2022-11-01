@@ -419,9 +419,9 @@ export default function Admin() {
 
     let newPictureUrl: string = null;
 
-    setIsCreatingService(true);
-
     if (imageFile) {
+      setIsCreatingService(true);
+      
       const randomizedRef = `${moment().unix().toString()}_${makeid(10)}_${
         admin.email
       }`;

@@ -3,11 +3,13 @@ import React, { useEffect, useState } from "react";
 import Footer from "../../components/Footer";
 import Head from "next/head";
 import Link from "next/link";
+import { MongooseService } from "../../interfaces/Service";
 import { NextPage } from "next";
 import UseAnimations from "react-useanimations";
 import getServices from "../../hooks/getServices";
 import infinity from "react-useanimations/lib/infinity";
 import { loggedIn } from "../../hooks/loggedIn";
+import moment from "moment";
 import { useGlobalState } from "../../hooks/useGlobalState";
 import { useRouter } from "next/router";
 
@@ -19,6 +21,22 @@ const Services: NextPage = () => {
   useEffect(() => {
     getServices(state, setState, setLoaded);
   }, [router.pathname]);
+
+  const checkAccountService = (service: MongooseService): boolean => {
+    if (!state.loggedIn) return false;
+
+    const accountServicesId = state.account.services.map(
+      (accService) => accService.servId
+    );
+
+    const i = accountServicesId.findIndex((x) => x === service._id);
+
+    if (i !== -1 && moment(state.account.services[i].expiresOn).isAfter()) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   return (
     <>
@@ -56,14 +74,34 @@ const Services: NextPage = () => {
                           {service.description}
                         </p>
                         <div className="flex mt-4 items-center flex-wrap">
-                          <Link href="/pricing">
-                            <a
-                              style={{ background: "#3763f4" }}
-                              className="text-white cursor-pointer inter hover:shadow-2xl inline-flex items-center border-0 py-2 px-5 focus:outline-none rounded-md text-base md:mt-0"
-                            >
-                              Buy Now (₹{service.price / 100}/year)
-                            </a>
-                          </Link>
+                          {checkAccountService(service) ? (
+                            <Link href={`/services/${service._id}`}>
+                              <a className="text-indigo-500 hover:text-indigo-600 inline-flex items-center ">
+                                Learn
+                                <svg
+                                  className="w-4 h-4 ml-2"
+                                  viewBox="0 0 24 24"
+                                  stroke="currentColor"
+                                  stroke-width="2"
+                                  fill="none"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                >
+                                  <path d="M5 12h14"></path>
+                                  <path d="M12 5l7 7-7 7"></path>
+                                </svg>
+                              </a>
+                            </Link>
+                          ) : (
+                            <Link href="/pricing">
+                              <a
+                                style={{ background: "#3763f4" }}
+                                className="text-white cursor-pointer inter hover:shadow-2xl inline-flex items-center border-0 py-2 px-5 focus:outline-none rounded-md text-base md:mt-0"
+                              >
+                                Buy Now (₹{service.price / 100}/year)
+                              </a>
+                            </Link>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -77,14 +115,34 @@ const Services: NextPage = () => {
                           {service.description}
                         </p>
                         <div className="flex mt-4 items-center flex-wrap">
-                          <Link href="/pricing">
-                            <a
-                              style={{ background: "#3763f4" }}
-                              className="text-white cursor-pointer inter hover:shadow-2xl inline-flex items-center border-0 py-2 px-5 focus:outline-none rounded-md text-base md:mt-0"
-                            >
-                              Buy Now (₹{service.price / 100}/year)
-                            </a>
-                          </Link>
+                        {checkAccountService(service) ? (
+                            <Link href={`/services/${service._id}`}>
+                              <a className="text-indigo-500 hover:text-indigo-600 inline-flex items-center ">
+                                Learn
+                                <svg
+                                  className="w-4 h-4 ml-2"
+                                  viewBox="0 0 24 24"
+                                  stroke="currentColor"
+                                  stroke-width="2"
+                                  fill="none"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                >
+                                  <path d="M5 12h14"></path>
+                                  <path d="M12 5l7 7-7 7"></path>
+                                </svg>
+                              </a>
+                            </Link>
+                          ) : (
+                            <Link href="/pricing">
+                              <a
+                                style={{ background: "#3763f4" }}
+                                className="text-white cursor-pointer inter hover:shadow-2xl inline-flex items-center border-0 py-2 px-5 focus:outline-none rounded-md text-base md:mt-0"
+                              >
+                                Buy Now (₹{service.price / 100}/year)
+                              </a>
+                            </Link>
+                          )}
                         </div>
                       </div>
                       <div className="w-72 h-72 order-first sm:order-none sm:ml-10 inline-flex items-center justify-center rounded-full text-indigo-400 flex-shrink-0">
@@ -119,9 +177,7 @@ const Services: NextPage = () => {
           )}
         </div>
       </section>
-      {loaded ? (
-        <Footer />
-      ) : <></>}
+      {loaded ? <Footer /> : <></>}
     </>
   );
 };
