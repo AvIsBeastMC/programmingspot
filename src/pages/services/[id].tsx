@@ -63,11 +63,40 @@ export default function () {
             {service.name} - {service.lessons.length} Lessons
           </title>
         </Head>
-        <h1 className="text-center mt-4 inter text-3xl font-bold">
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-blue-700">
-            {service.name}
-          </span>
-        </h1>
+        <div
+          className="text-center py-12"
+          style={{
+            backgroundImage:
+              "url('https://wallpaperaccess.com/full/1091423.jpg')",
+          }}
+        >
+          <div className="flex flex-col text-center w-full">
+            <h1 className="sm:text-3xl text-2xl inter font-medium title-font mb-4 text-gray-900">
+              {service.name} - {service.lessons.length} Lessons
+            </h1>
+            <p className="lg:w-2/3 poppins mx-auto leading-relaxed text-base">
+              Find the lessons of this course below! Have a great time!
+            </p>
+          </div>
+        </div>
+        <section className="text-gray-600 body-font">
+          <div className="container px-5 py-12 mx-auto">
+            <div className="flex flex-wrap -m-2">
+              {service.lessons.map((lesson) => (
+                <div className="p-2 lg:w-1/3 md:w-1/2 w-full">
+                  <div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
+                    <div className="flex-grow">
+                      <h2 className="text-gray-900 title-font font-medium">
+                        {lesson.title}
+                      </h2>
+                      <p className="text-gray-500">{lesson.description}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
       </>
     );
   } else {
@@ -80,7 +109,7 @@ export default function () {
           marginTop: "4px",
         }}
       >
-        {/* <UseAnimations size={40} animation={infinity} /> */}
+        <UseAnimations size={40} animation={infinity} />
       </div>
     );
   }

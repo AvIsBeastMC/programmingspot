@@ -3,7 +3,9 @@ export interface Lesson {
     title: string,
     description: string,
     videoUrl: string,
-    points: string[]
+    points: string[],
+    dateCreated: Date,
+    id: string
 }
 
 export interface Service {
