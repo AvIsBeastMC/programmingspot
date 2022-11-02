@@ -133,7 +133,7 @@ export default function () {
                           {lesson.title}
                         </h1>
                         <p className="leading-relaxed my-1">
-                          {StringReplaceAll(lesson.description, '--n--', "")}
+                          {StringReplaceAll(lesson.description, '--n--', " ")}
                         </p>
                         <p className="leading-relaxed mb-1">
                           {lesson.points.length} Points
