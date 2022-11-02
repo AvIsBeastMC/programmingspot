@@ -74,8 +74,8 @@ const Pricing: NextPage = () => {
           {loaded ? (
             <div className="px-2 flex flex-wrap -m-4">
               <>
-                {state.services.map((service) => (
-                  <div data-aos="fade-down" className="p-4 w-full">
+                {state.services.map((service, i) => (
+                  <div key={i} data-aos="fade-down" className="p-4 w-full">
                     <div className="h-full p-6 rounded-lg border-2 border-indigo-500 flex flex-col relative overflow-hidden">
                       <span className="bg-indigo-500 text-white uppercase inter px-3 py-1 tracking-widest text-xs absolute right-0 top-0 rounded-bl">
                         Recommended
@@ -122,8 +122,15 @@ const Pricing: NextPage = () => {
             </div>
           ) : null}
         </div>
+        {state.services.length === 0 ? (
+                  <h1 className="inter py-4 text-red-400 text-center text-xl">
+                    No Services Available for Purchase
+                  </h1>
+                ) : (
+                  <></>
+                )}
       </section>
-      {loaded ? <Footer /> : null}
+      {loaded && state.services.length ? <Footer /> : null}
     </>
   );
 };

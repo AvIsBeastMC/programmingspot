@@ -320,7 +320,7 @@ export default function Admin() {
           headers: {
             method: "createService",
             name: serviceNameRef.current.value,
-            description: serviceDescriptionRef.current.value,
+            description: stringReplaceAll(serviceDescriptionRef.current.value, "\n", "--n--") ,
             price: servicePriceRef.current.value,
             points: JSON.stringify(servicePoints),
             image: downloadUrl,
@@ -332,6 +332,7 @@ export default function Admin() {
           goBack();
         })
         .catch((error: AxiosError<ServerError>) => {
+          console.log(error)
           handleAxiosError(error);
           setIsCreatingService(false);
           goBack();
