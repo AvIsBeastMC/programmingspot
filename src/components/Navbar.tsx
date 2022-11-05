@@ -2,13 +2,27 @@ import Link from "next/link";
 import { NavLink } from "./NavLink";
 import React from "react";
 import { useGlobalState } from "../hooks/useGlobalState";
+import { useRouter } from "next/router";
 
 const Navbar: React.FC = () => {
   const { state, setState } = useGlobalState();
+  const router = useRouter();
+
+  const logout = () => {
+    setState({
+      ...state,
+      account: null,
+      loggedIn: false,
+    });
+    localStorage.removeItem("ACCOUNT_EMAIL");
+    localStorage.removeItem("ACCOUNT_PASSWORD");
+    router.push("/").then(() => {
+      router.reload();
+    });
+  };
+
   return (
-    <header
-      className=" bg-blue-200 shadow-xl sticky sm:flex top-0 z-50 body-font transition-all"
-    >
+    <header className=" bg-blue-200 shadow-xl sticky sm:flex top-0 z-50 body-font transition-all">
       <div className="container transition-all mx-auto px-14 flex flex-wrap p-5 flex-col md:flex-row items-center">
         <Link href="/">
           <a className="select-none flex title-font font-medium items-center mb-4 md:mb-0">
@@ -34,14 +48,23 @@ const Navbar: React.FC = () => {
             </a>
           </Link>
         ) : (
-          <Link href="/dashboard">
-            <a
+          <>
+            <Link href="/dashboard">
+              <a
+                style={{ background: "#3763f4" }}
+                className="text-white inter hover:shadow-xl inline-flex items-center border-0 py-2 px-5 focus:outline-none rounded-xl text-base mt-4 md:mt-0"
+              >
+                Welcome {state.account.name.split(" ")[0]}!
+              </a>
+            </Link>
+            <button
+              onClick={logout}
               style={{ background: "#3763f4" }}
-              className="text-white inter hover:shadow-xl inline-flex items-center border-0 py-2 px-5 focus:outline-none rounded-xl text-base mt-4 md:mt-0"
+              className="ml-3 text-white inter hover:shadow-xl inline-flex items-center border-0 py-2 px-5 focus:outline-none rounded-xl text-base mt-4 md:mt-0"
             >
-              Welcome {state.account.name.split(" ")[0]}!
-            </a>
-          </Link>
+              Logout
+            </button>
+          </>
         )}
       </div>
     </header>
