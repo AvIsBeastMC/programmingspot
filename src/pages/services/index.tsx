@@ -6,6 +6,7 @@ import Link from "next/link";
 import { MongooseService } from "../../interfaces/Service";
 import { NextPage } from "next";
 import UseAnimations from "react-useanimations";
+import firebase from "../../../firebase";
 import getServices from "../../hooks/getServices";
 import infinity from "react-useanimations/lib/infinity";
 import { loggedIn } from "../../hooks/loggedIn";
@@ -20,6 +21,7 @@ const Services: NextPage = () => {
 
   useEffect(() => {
     getServices(state, setState, setLoaded);
+    firebase.analytics().logEvent('page_view')
   }, [router.pathname]);
 
   const checkAccountService = (service: MongooseService): boolean => {

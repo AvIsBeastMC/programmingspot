@@ -9,6 +9,7 @@ import axios, { AxiosError } from "axios";
 
 import { MongooseService } from "../interfaces/Service";
 import { ServerError } from "../interfaces/ServerError";
+import firebase from "../../firebase";
 import getAccount from "./getAccount";
 
 declare global {
@@ -37,6 +38,7 @@ export const useNewOrder = (
       })
       .then((res) => {
         alert('Successful!')
+        firebase.analytics().logEvent('purchase')
         router.push("/dashboard");
       })
       .catch((error: AxiosError<ServerError>) => {
@@ -47,6 +49,8 @@ export const useNewOrder = (
         );
       });
   };
+
+  firebase.analytics().logEvent('begin_checkout')
 
   if (service.price !== 0) {
     var options1 = {

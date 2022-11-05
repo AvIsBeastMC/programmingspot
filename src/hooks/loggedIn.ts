@@ -4,6 +4,7 @@ import { GlobalStateInterface, mongoApi } from "./useGlobalState";
 import axios, { AxiosResponse } from "axios";
 
 import CryptoJS from "crypto-js";
+import firebase from "../../firebase";
 import moment from "moment";
 
 export const loggedIn = async (
@@ -36,6 +37,7 @@ export const loggedIn = async (
         loggedIn: true,
         expiresOn: moment().add("24", "hours").toString(),
       });
+      firebase.analytics().logEvent('login')
     }
   }
 };

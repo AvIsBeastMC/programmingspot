@@ -8,27 +8,34 @@ import { ServerError } from "../interfaces/ServerError";
 import handleAxiosError from "./handleAxiosError";
 import moment from "moment";
 
-export default function getAccount (state: GlobalStateInterface, setState: Dispatch<SetStateAction<GlobalStateInterface>>, router: NextRouter) {
+export default function getAccount(
+  state: GlobalStateInterface,
+  setState: Dispatch<SetStateAction<GlobalStateInterface>>,
+  router: NextRouter
+) {
+  if (
+    !localStorage.getItem("ACCOUNT_EMAIL") ||
+    !localStorage.getItem("ACCOUNT_PASSWORD")
+  )
+    return router.reload();
 
-    if (!localStorage.getItem('ACCOUNT_EMAIL') || !localStorage.getItem('ACCOUNT_PASSWORD')) return router.reload();
-    
-    axios
-      .get(`${mongoApi}/auth`, {
-        headers: {
-          method: "login",
-          email: localStorage.getItem('ACCOUNT_EMAIL'),
-          password: localStorage.getItem('ACCOUNT_PASSWORD'),
-        },
-      })
-      .then((res: AxiosResponse<MongooseAccount>) => {
-        setState({
-          ...state,
-          account: res.data,
-          loggedIn: true,
-          expiresOn: moment().add("24", "hours").toString(),
-        })
-      })
-      .catch((e: AxiosError<ServerError>) => {
-        return router.reload()
+  axios
+    .get(`${mongoApi}/auth`, {
+      headers: {
+        method: "login",
+        email: localStorage.getItem("ACCOUNT_EMAIL"),
+        password: localStorage.getItem("ACCOUNT_PASSWORD"),
+      },
+    })
+    .then((res: AxiosResponse<MongooseAccount>) => {
+      setState({
+        ...state,
+        account: res.data,
+        loggedIn: true,
+        expiresOn: moment().add("24", "hours").toString(),
       });
+    })
+    .catch((e: AxiosError<ServerError>) => {
+      return router.reload();
+    });
 }

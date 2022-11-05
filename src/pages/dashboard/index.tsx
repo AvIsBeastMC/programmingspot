@@ -4,6 +4,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { MongooseService } from "../../interfaces/Service";
 import { NextPage } from "next";
+import firebase from "../../../firebase";
 import getAccount from "../../hooks/getAccount";
 import { loggedIn } from "../../hooks/loggedIn";
 import moment from "moment";
@@ -21,6 +22,7 @@ const Dashboard: NextPage = () => {
       }
       getAccount(state, setState, router);
     });
+    firebase.analytics().logEvent('page_view')
   }, [router.isReady]);
 
   const getService = (_id: string): MongooseService => {

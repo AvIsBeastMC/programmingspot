@@ -7,6 +7,7 @@ import Head from "next/head";
 import { ServerError } from "../../interfaces/ServerError";
 import StringReplaceAll from "string-replace-all";
 import UseAnimations from "react-useanimations";
+import firebase from "../../../firebase";
 import handleAxiosError from "../../hooks/handleAxiosError";
 import infinity from "react-useanimations/lib/infinity";
 import moment from "moment";
@@ -49,6 +50,7 @@ export default function () {
         })
         .then((response: AxiosResponse<MongooseService>) => {
           setService(response.data);
+          firebase.analytics().logEvent('page_view')
         })
         .catch((e: AxiosError<ServerError>) => {
           handleAxiosError(e);

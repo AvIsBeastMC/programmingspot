@@ -8,6 +8,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { NextPage } from "next";
 import { ServerError } from "../../interfaces/ServerError";
+import firebase from "firebase";
 import handleAxiosError from "../../hooks/handleAxiosError";
 import { loggedIn } from "../../hooks/loggedIn";
 import moment from "moment";
@@ -27,6 +28,7 @@ const Login: NextPage = () => {
   if (state.loggedIn) {
     router.push("/");
   }
+
   const login = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -53,6 +55,8 @@ const Login: NextPage = () => {
 
         localStorage.setItem("ACCOUNT_EMAIL", res.data.email);
         localStorage.setItem("ACCOUNT_PASSWORD", res.data.password);
+
+        firebase.analytics().logEvent('login')
       })
       .catch((e: AxiosError<ServerError>) => {
         setLoading(false);
