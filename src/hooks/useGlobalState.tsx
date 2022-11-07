@@ -10,7 +10,7 @@ export interface GlobalStateInterface {
   loggedIn: boolean
 }
 
-export const mongoApi: string = process.env.NEXT_PUBLIC_mongoapi || 'https://programmingspot.herokuapp.com'
+export const mongoApi: string = process.env.NEXT_PUBLIC_mongoapi || 'http://localhost:4000'
 
 const initialState: GlobalStateInterface = {
   account: null,

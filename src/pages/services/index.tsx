@@ -51,7 +51,7 @@ const Services: NextPage = () => {
         </span>
       </h1>
       <section className="text-gray-400 mt-4 mb-12 body-font mx-auto">
-        <div className="container px-5 mx-auto">
+        <div className="container px-5 py-12 mx-auto">
           {loaded ? (
             <>
               {state.services.map((service, i) => (
@@ -179,7 +179,7 @@ const Services: NextPage = () => {
           )}
         </div>
       </section>
-      {loaded ? <Footer /> : <></>}
+      {loaded && state.services.length >= 4 ? <Footer /> : <></>}
     </>
   );
 };
