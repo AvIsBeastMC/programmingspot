@@ -122,7 +122,7 @@ const Login: NextPage = () => {
                 Go to Signup
               </span>
             </Link>
-            <Link href="/auth/signup">
+            <Link href="/forgotpass">
               <span className="ml-3 cursor-pointer text-blue-600 poppins mt-2">
                 Forgot Password?
               </span>
