@@ -77,7 +77,7 @@ const Contact: NextPage = () => {
               </div>
               <div className="md:flex-grow">
               <h2 className="text-xl font-medium text-gray-900 title-font mb-2">Ansh Shawrikar</h2>
-                <a href="https://www.facebook.com/ansh.shawrikar" className="text-indigo-500 inline-flex items-center">
+                <a href="https://www.facebook.com/profile.php?id=100087250854360" className="text-indigo-500 inline-flex items-center">
                   Visit
                   <svg
                     className="w-4 h-4 ml-2"
