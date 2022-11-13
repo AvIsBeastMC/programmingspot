@@ -58,8 +58,8 @@ const Pricing: NextPage = () => {
           <div className="flex flex-col text-center w-full mb-12">
             <p className="lg:w-2/3 px-5 mx-auto leading-relaxed text-base">
               Choose a course which you would like to enroll in. It is
-              recommended to start with Web Development Course if you are a
-              complete beginner.
+              recommended to start with Computer Basics Course if you are new
+              to computers.
             </p>
           </div>
           {!loaded ? (
