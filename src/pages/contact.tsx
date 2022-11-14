@@ -72,7 +72,7 @@ const Contact: NextPage = () => {
             <div className="py-8 flex flex-wrap md:flex-nowrap">
               <div className="md:w-64 md:mb-0 mb-6 flex-shrink-0 flex flex-col">
                 <span className="font-semibold text-xl title-font text-gray-700">
-                <i className="bi bi-facebook mr-1" /> Facebook
+                <i className="bi bi-facebook mr-1" /> Facebook 
                 </span>
               </div>
               <div className="md:flex-grow">
