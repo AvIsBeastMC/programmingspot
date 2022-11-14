@@ -15,7 +15,7 @@ export const NavLink = (props: NavProps) => {
       <a
         className={
           props.href == router.pathname
-            ? `border-b-2 border-dashed border-gray-500 mr-5 hover:text-black`
+            ? `border-b-2 border-dotted border-gray-500 mr-5 hover:text-black`
             : "mr-5 hover:text-black"
         }
       >

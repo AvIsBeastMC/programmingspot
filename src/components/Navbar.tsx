@@ -36,6 +36,7 @@ const Navbar: React.FC = () => {
           <NavLink href="/" title="Home" />
           <NavLink href="/services" title="Services" />
           <NavLink href="/pricing" title="Pricing" />
+          <NavLink href="/about" title="About" />
           <NavLink href="/contact" title="Contact" />
         </nav>
         {!state.loggedIn ? (
