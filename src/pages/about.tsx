@@ -48,7 +48,7 @@ export default function AboutPage() {
               programming languages at a very reasonable price. We also make
               sure the courses are available in different languages so that
               different sets of people can understand the courses. <br /> <span className="border-b-2 border-gray-300 poppins">At last, we
-              want to reach everyone who is really willing to coding but isn't
+              want to reach everyone who is really willing to learn to code but isn't
               getting the opportunity to do so. </span>
             </p>
           </div>
