@@ -50,7 +50,7 @@ export default function () {
         })
         .then((response: AxiosResponse<MongooseService>) => {
           setService(response.data);
-          firebase.analytics().logEvent('page_view')
+          // firebase.analytics().logEvent('page_view')
         })
         .catch((e: AxiosError<ServerError>) => {
           handleAxiosError(e);

@@ -37,7 +37,7 @@ export const loggedIn = async (
         loggedIn: true,
         expiresOn: moment().add("24", "hours").toString(),
       });
-      firebase.analytics().logEvent('login')
+      // firebase.analytics().logEvent('login')
     }
   }
 };

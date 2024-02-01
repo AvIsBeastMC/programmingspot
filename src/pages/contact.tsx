@@ -5,7 +5,7 @@ import Footer from "../components/Footer";
 import firebase from "../../firebase";
 const Contact: NextPage = () => {
   useEffect(() => {
-    firebase.analytics().logEvent('page_view')
+    // firebase.analytics().logEvent('page_view')
   }, [])
   return (
     <>

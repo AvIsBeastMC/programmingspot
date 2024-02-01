@@ -21,7 +21,7 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     getServices(state, setState, setLoaded);
-    firebase.analytics().logEvent('page_view')
+    // firebase.analytics().logEvent('page_view')
   }, []);
 
   return (

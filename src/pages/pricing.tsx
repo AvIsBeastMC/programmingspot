@@ -23,7 +23,7 @@ const Pricing: NextPage = () => {
 
   useEffect(() => {
     getServices(state, setState, setLoaded, true);
-    firebase.analytics().logEvent('page_view')
+    // firebase.analytics().logEvent('page_view')
   }, [router.pathname]);
 
   const checkAccountService = (service: MongooseService): boolean => {

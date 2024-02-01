@@ -38,7 +38,7 @@ export const useNewOrder = (
       })
       .then((res) => {
         alert('Successful!')
-        firebase.analytics().logEvent('purchase')
+        // firebase.analytics().logEvent('purchase')
         router.push("/dashboard");
       })
       .catch((error: AxiosError<ServerError>) => {
@@ -50,7 +50,7 @@ export const useNewOrder = (
       });
   };
 
-  firebase.analytics().logEvent('begin_checkout')
+  // firebase.analytics().logEvent('begin_checkout')
 
   if (service.price !== 0) {
     var options1 = {

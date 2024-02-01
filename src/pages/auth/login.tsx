@@ -56,7 +56,7 @@ const Login: NextPage = () => {
         localStorage.setItem("ACCOUNT_EMAIL", res.data.email);
         localStorage.setItem("ACCOUNT_PASSWORD", res.data.password);
 
-        firebase.analytics().logEvent('login')
+        // firebase.analytics().logEvent('login')
       })
       .catch((e: AxiosError<ServerError>) => {
         setLoading(false);

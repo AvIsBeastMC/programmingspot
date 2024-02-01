@@ -22,7 +22,7 @@ const Dashboard: NextPage = () => {
       }
       getAccount(state, setState, router);
     });
-    firebase.analytics().logEvent('page_view')
+    // firebase.analytics().logEvent('page_view')
   }, [router.isReady]);
 
   const getService = (_id: string): MongooseService => {
