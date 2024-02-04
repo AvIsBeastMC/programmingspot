@@ -52,7 +52,7 @@ const Home: NextPage = () => {
                         PROGRAMMING SPOT
                       </h2>
                       <h2 className="inter text-md mt-2 text-green-300">
-                        Committed to Excellence
+                        Promoting Computer Literacy
                       </h2>
                     </div>
                   </div>
