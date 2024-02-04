@@ -22,7 +22,7 @@ export default function AboutPage() {
             </div>
             <h1 className="text-4xl font-medium title-font my-4 text-gray-900 inter uppercase" data-aos="fade-in" data-aos-delay="600">
               {" "}
-              ProgrammingSpot
+              Programming Spot
             </h1>
             <p className="lg:w-2/3 mx-auto leading-relaxed text-base" data-aos="fade-in" data-aos-delay="900">
               In today’s scenario human beings are the most valuable resource.
