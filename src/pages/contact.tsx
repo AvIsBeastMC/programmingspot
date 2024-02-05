@@ -127,7 +127,7 @@ const Contact: NextPage = () => {
               </div>
               <div className="md:flex-grow">
               <h2 className="text-xl font-medium text-gray-900 title-font mb-2">Official Discord Server</h2>
-                <a href="https://discord.gg/U4zgsUgrM6" className="text-indigo-500 inline-flex items-center">
+                <a href="https://discord.com/invite/CWc8ebwFQR" className="text-indigo-500 inline-flex items-center">
                   Visit
                   <svg
                     className="w-4 h-4 ml-2"
